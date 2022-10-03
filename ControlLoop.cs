@@ -1,11 +1,13 @@
 using Login;
 using Users;
+using Tickets;
 
 namespace ControlLoop
 {
     public class Controller
     {
         public static LoginHandler handler = new LoginHandler();
+        public static TicketHandler ticketHandler = new TicketHandler();
 
         public static void RunLoop()
         {
@@ -70,7 +72,7 @@ namespace ControlLoop
                 User? temp = handler.login(usr, passwd);
                 if (temp != null)
                 {
-                    Console.WriteLine("Logged in as: " + temp.UserName);
+                    Controller.RunTickets(temp);
                 }
                 else
                 {
@@ -123,6 +125,98 @@ namespace ControlLoop
                     Controller.RunRegister();
                 }
             }
+        }
+
+        public static void RunTickets(User usr)
+        {
+            if (usr.IsManager)
+            {
+
+            }
+            else
+            {
+                Controller.RunTicketsE(usr);
+            }
+        }
+
+        public static void RunTicketsE(User usr)
+        {
+            Console.WriteLine("Main menu");
+            Console.WriteLine("###################################");
+            Console.WriteLine(" [1] Add Tickets");
+            Console.WriteLine(" [2] View Tickets");
+            Console.WriteLine(" [3] Quit");
+            Console.WriteLine("###################################");
+            string? input = Console.ReadLine();
+            if (input != null)
+            {
+                int selection;
+                bool check = int.TryParse(input, out selection);
+                if (check)
+                {
+                    if (selection == 1)
+                    {
+                        Controller.CreateTicket(usr);
+                    }
+                    else if (selection == 2)
+                    {
+                        Controller.ViewTickets(usr);
+                    }
+                    else if (selection == 3)
+                    {
+                        Console.WriteLine("Goodbye!");
+                        Environment.Exit(0);
+                        return;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid Selection, Press enter to continue");
+                        Console.ReadLine();
+                        Controller.RunTicketsE(usr);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input, please enter 1, 2, or 3, press enter to continue");
+                    Console.ReadLine();
+                    Controller.RunTicketsE(usr);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Read error, press enter to continue");
+                Console.ReadLine();
+                Controller.RunTicketsE(usr);
+            }
+        }
+
+        public static void CreateTicket(User usr)
+        {
+            Console.WriteLine("Ticket Amount: ");
+            string? amtRaw = Console.ReadLine();
+            Console.WriteLine("Expesnse description: ");
+            string? descRaw = Console.ReadLine();
+            if (amtRaw != null && descRaw != null)
+            {
+                double val;
+                bool check = double.TryParse(amtRaw, out val);
+                if (check)
+                {
+                    ticketHandler.addTicket(usr, val, descRaw);
+                    RunTicketsE(usr);
+                    return;
+                }
+            }
+            CreateTicket(usr);
+        }
+
+        public static void ViewTickets(User usr)
+        {
+            Console.WriteLine(" id creator \t amount \t description \t status");
+            ticketHandler.printTickets(usr);
+            Console.WriteLine("Press enter to continue");
+            Console.ReadLine();
+            RunTicketsE(usr);
         }
 
     }
