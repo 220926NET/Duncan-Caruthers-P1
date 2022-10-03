@@ -24,15 +24,17 @@ namespace ControlLoop
                 {
                     if (selection == 1)
                     {
-
+                        Controller.RunLogin();
                     }
                     else if (selection == 2)
                     {
-
+                        Controller.RunRegister();
                     }
                     else if (selection == 3)
                     {
-
+                        Console.WriteLine("Goodbye!");
+                        Environment.Exit(0);
+                        return;
                     }
                     else
                     {
@@ -55,5 +57,73 @@ namespace ControlLoop
                 Controller.RunLoop();
             }
         }
+
+        public static void RunLogin()
+        {
+            Console.Write("Username: ");
+            string? usr = Console.ReadLine();
+            Console.Write("Password: ");
+            string? passwd = Console.ReadLine();
+
+            if (usr != null && passwd != null)
+            {
+                User? temp = handler.login(usr, passwd);
+                if (temp != null)
+                {
+                    Console.WriteLine("Logged in as: " + temp.UserName);
+                }
+                else
+                {
+                    Console.WriteLine("Invalid login information, press enter to continue");
+                    Console.ReadLine();
+                    Controller.RunLoop();
+                }
+            }
+            else
+            {
+                Console.WriteLine("Read error, press enter to continue");
+                Console.ReadLine();
+                Controller.RunLogin();
+            }
+        }
+
+        public static void RunRegister()
+        {
+            Console.Write("Will this new user be a manager? (y/N) -> default no: ");
+            string? input = Console.ReadLine();
+            if (input != null)
+            {
+                bool mgr = false;
+                if (input.ToLower().StartsWith('y'))
+                {
+                    mgr = true;
+                }
+                Console.Write("New Username: ");
+                string? usr = Console.ReadLine();
+                Console.Write("New Password: ");
+                string? passwd = Console.ReadLine();
+                if (usr != null && passwd != null)
+                {
+                    if (handler.addUser(usr, passwd, mgr))
+                    {
+                        Console.WriteLine("Suceess!");
+                        Controller.RunLoop();
+                    }
+                    else
+                    {
+                        Console.WriteLine("User name already in use, press enter to continue");
+                        Console.ReadLine();
+                        Controller.RunRegister();
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Read error");
+                    Console.ReadLine();
+                    Controller.RunRegister();
+                }
+            }
+        }
+
     }
 }
