@@ -2,7 +2,7 @@ using Users;
 
 namespace Login
 {
-    class LoginHandler
+    public class LoginHandler
     {
         private List<User> users;
 
