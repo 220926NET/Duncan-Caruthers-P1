@@ -118,9 +118,13 @@ while (true)
     if (selection == 1)
     {
         Console.Write("Username: ");
-        string username = Console.ReadLine();
+        string? username = Console.ReadLine();
         Console.Write("Password: ");
-        string password = Console.ReadLine();
+        string? password = Console.ReadLine();
+        if (username == null || password == null)
+        {
+            continue;
+        }
         if (temp.checkCredentials(username, password))
         {
             if (temp.IsManager)
