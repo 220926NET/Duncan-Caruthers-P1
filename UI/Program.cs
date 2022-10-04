@@ -14,6 +14,7 @@
 
 using Login;
 using Users;
+using Tickets;
 
 while (true)
 {
@@ -47,6 +48,7 @@ while (true)
 public class UIHandler
 {
     private static LoginHandler users = new LoginHandler();
+    private static TicketHandler tickets = new TicketHandler();
 
     public static int GetSelection()
     {
@@ -119,13 +121,15 @@ public class UIHandler
             double amt = GetDouble();
             Console.Write("Description of Ticket: ");
             string? desc = Console.ReadLine();
-            if (desc == null)
+            if (desc != null)
             {
-                Console.WriteLine("Null description");
+                tickets.addTicket(amt, desc);
+                Console.WriteLine("Ticket submitted");
             }
-            Console.WriteLine("Cant Do anything with this yet, but heres what you entered");
-            Console.WriteLine(amt);
-            Console.WriteLine(desc);
+            else
+            {
+                Console.WriteLine("Cannot add null description ticket");
+            }
         }
         else if (selection == 3)
         {
