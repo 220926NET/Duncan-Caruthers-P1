@@ -12,6 +12,8 @@
         `-- Quit
 */
 
+using Users;
+
 static int GetSelection()
 {
     string? selection = Console.ReadLine();
@@ -66,7 +68,7 @@ static void ManagerInteraction()
 
 static void EmployeeInteraction()
 {
-    Console.Write("Welecome Employee!");
+    Console.WriteLine("Welecome Employee!");
     Console.WriteLine("----------------------------------------");
     Console.WriteLine(" [1] View Past Tickets");
     Console.WriteLine(" [2] Create Reimbursement Ticket");
@@ -102,19 +104,34 @@ static void EmployeeInteraction()
 
 }
 
+User temp = new User("test", "test", false);
+
 while (true)
 {
     Console.WriteLine("Welcome To the Reimbursemt System");
     Console.WriteLine("----------------------------------------");
-    Console.WriteLine(" [1] Manager");
-    Console.WriteLine(" [2] Employee ");
+    Console.WriteLine(" [1] Login");
+    Console.WriteLine(" [2] Register");
     Console.WriteLine(" [3] Exit");
     Console.WriteLine("----------------------------------------");
     int selection = GetSelection();
     if (selection == 1)
     {
-        // Manager
-        ManagerInteraction();
+        Console.Write("Username: ");
+        string username = Console.ReadLine();
+        Console.Write("Password: ");
+        string password = Console.ReadLine();
+        if (temp.checkCredentials(username, password))
+        {
+            if (temp.IsManager)
+            {
+                ManagerInteraction();
+            }
+            else
+            {
+                EmployeeInteraction();
+            }
+        }
     }
     else if (selection == 2)
     {
