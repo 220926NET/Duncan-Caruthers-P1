@@ -47,6 +47,8 @@ while (true)
 
 public class UIHandler
 {
+    private static User temp = new User("test", "test", true);
+
     public static int GetSelection()
     {
         string? selection = Console.ReadLine();
@@ -139,7 +141,6 @@ public class UIHandler
 
     public static void LoginInteraction()
     {
-        User temp = new User("test", "test", false);
         Console.Write("Username: ");
         string? username = Console.ReadLine();
         Console.Write("Password: ");
@@ -158,30 +159,44 @@ public class UIHandler
             {
                 EmployeeInteraction();
             }
+        }
+        else
+        {
+            Console.WriteLine("Username or Password Incorrect");
         }
     }
 
     public static void RegisterInteraction()
     {
-        User temp = new User("test", "test", false);
-        Console.Write("Username: ");
+        Console.Write("Will this user be a manager [y/N]?");
+        string? man = Console.ReadLine();
+        if (man == null)
+        {
+            return;
+        }
+        bool m;
+        if (man.ToLower().Equals("y"))
+        {
+            m = true;
+        }
+        else if (man.ToLower().Equals("n"))
+        {
+            m = false;
+        }
+        else
+        {
+            Console.WriteLine("Invalid Input");
+            return;
+        }
+
+        Console.Write("New Username: ");
         string? username = Console.ReadLine();
-        Console.Write("Password: ");
+        Console.Write("New Password: ");
         string? password = Console.ReadLine();
         if (username == null || password == null)
         {
             return;
         }
-        if (temp.checkCredentials(username, password))
-        {
-            if (temp.IsManager)
-            {
-                ManagerInteraction();
-            }
-            else
-            {
-                EmployeeInteraction();
-            }
-        }
+        temp = new User(username, password, m);
     }
 }
