@@ -58,6 +58,10 @@ static void ManagerInteraction()
     {
         Environment.Exit(0);
     }
+    else
+    {
+        Console.WriteLine("Invalid selection");
+    }
 }
 
 static void EmployeeInteraction()
@@ -91,6 +95,10 @@ static void EmployeeInteraction()
     {
         Environment.Exit(0);
     }
+    else
+    {
+        Console.WriteLine("Invalid selection");
+    }
 
 }
 
@@ -117,5 +125,9 @@ while (true)
     {
         // Quit
         Environment.Exit(0);
+    }
+    else
+    {
+        Console.WriteLine("Invalid selection");
     }
 }
