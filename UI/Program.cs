@@ -104,7 +104,30 @@ static void EmployeeInteraction()
 
 }
 
-User temp = new User("test", "test", false);
+static void LoginInteraction()
+{
+    User temp = new User("test", "test", false);
+    Console.Write("Username: ");
+    string? username = Console.ReadLine();
+    Console.Write("Password: ");
+    string? password = Console.ReadLine();
+    if (username == null || password == null)
+    {
+        return;
+    }
+    if (temp.checkCredentials(username, password))
+    {
+        if (temp.IsManager)
+        {
+            ManagerInteraction();
+        }
+        else
+        {
+            EmployeeInteraction();
+        }
+    }
+}
+
 
 while (true)
 {
@@ -117,25 +140,7 @@ while (true)
     int selection = GetSelection();
     if (selection == 1)
     {
-        Console.Write("Username: ");
-        string? username = Console.ReadLine();
-        Console.Write("Password: ");
-        string? password = Console.ReadLine();
-        if (username == null || password == null)
-        {
-            continue;
-        }
-        if (temp.checkCredentials(username, password))
-        {
-            if (temp.IsManager)
-            {
-                ManagerInteraction();
-            }
-            else
-            {
-                EmployeeInteraction();
-            }
-        }
+        LoginInteraction();
     }
     else if (selection == 2)
     {
