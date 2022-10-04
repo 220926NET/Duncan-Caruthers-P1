@@ -12,6 +12,7 @@
         `-- Quit
 */
 
+using Login;
 using Users;
 
 
@@ -47,7 +48,7 @@ while (true)
 
 public class UIHandler
 {
-    private static User temp = new User("test", "test", true);
+    private static LoginHandler users = new LoginHandler();
 
     public static int GetSelection()
     {
@@ -149,20 +150,21 @@ public class UIHandler
         {
             return;
         }
-        if (temp.checkCredentials(username, password))
+
+        User? temp = users.login(username, password);
+        if (temp == null)
         {
-            if (temp.IsManager)
-            {
-                ManagerInteraction();
-            }
-            else
-            {
-                EmployeeInteraction();
-            }
+            Console.WriteLine("Invalid Username or password");
+            return;
+        }
+
+        if (temp.IsManager)
+        {
+            ManagerInteraction();
         }
         else
         {
-            Console.WriteLine("Username or Password Incorrect");
+            EmployeeInteraction();
         }
     }
 
@@ -197,6 +199,14 @@ public class UIHandler
         {
             return;
         }
-        temp = new User(username, password, m);
+
+        if (users.addUser(username, password, m))
+        {
+            return;
+        }
+        else
+        {
+            Console.WriteLine("Username taken");
+        }
     }
 }
