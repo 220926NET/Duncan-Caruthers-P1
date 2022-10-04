@@ -94,8 +94,7 @@ static void EmployeeInteraction()
 
 }
 
-bool done = false;
-while (!done)
+while (true)
 {
     Console.WriteLine("Welcome To the Reimbursemt System");
     Console.WriteLine("----------------------------------------");
