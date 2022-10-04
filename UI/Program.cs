@@ -12,6 +12,38 @@
         `-- Quit
 */
 
+static int GetSelection()
+{
+    string? selection = Console.ReadLine();
+    if (selection != null)
+    {
+        int value;
+        bool check = int.TryParse(selection, out value);
+        if (check)
+        {
+            return value;
+        }
+    }
+    return -1;
+}
+
+static double GetDouble()
+{
+    string? selection = Console.ReadLine();
+    if (selection != null)
+    {
+        double value;
+        bool check = double.TryParse(selection, out value);
+        if (check)
+        {
+            return value;
+        }
+    }
+    return -1;
+}
+
+
+
 bool done = false;
 while (!done)
 {
@@ -21,8 +53,7 @@ while (!done)
     Console.WriteLine(" [2] Employee ");
     Console.WriteLine(" [3] Exit");
     Console.WriteLine("----------------------------------------");
-    string selectionRaw = Console.ReadLine();
-    int selection = int.Parse(selectionRaw);
+    int selection = GetSelection();
     if (selection == 1)
     {
         // Manager
@@ -31,8 +62,7 @@ while (!done)
         Console.WriteLine(" [1] View list");
         Console.WriteLine(" [2] Exit");
         Console.WriteLine("----------------------------------------");
-        selectionRaw = Console.ReadLine();
-        selection = int.Parse(selectionRaw);
+        selection = GetSelection();
         if (selection == 1)
         {
             Console.WriteLine("Yee haw! this section of the system does not yet exist");
@@ -51,8 +81,7 @@ while (!done)
         Console.WriteLine(" [2] Create Reimbursement Ticket");
         Console.WriteLine(" [3] Exit");
         Console.WriteLine("----------------------------------------");
-        selectionRaw = Console.ReadLine();
-        selection = int.Parse(selectionRaw);
+        selection = GetSelection();
         if (selection == 1)
         {
             Console.WriteLine("Yee haw! this part of the system does not exist yet");
@@ -60,13 +89,16 @@ while (!done)
         else if (selection == 2)
         {
             Console.Write("Reimbursement Amount: ");
-            selectionRaw = Console.ReadLine();
-            double amt = double.Parse(selectionRaw);
+            double amt = GetDouble();
             Console.Write("Description of Ticket: ");
-            selectionRaw = Console.ReadLine();
+            string? desc = Console.ReadLine();
+            if (desc == null)
+            {
+                Console.WriteLine("Null description");
+            }
             Console.WriteLine("Cant Do anything with this yet, but heres what you entered");
             Console.WriteLine(amt);
-            Console.WriteLine(selectionRaw);
+            Console.WriteLine(desc);
         }
         else if (selection == 3)
         {
