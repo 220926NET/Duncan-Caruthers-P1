@@ -16,4 +16,14 @@ public class TicketHandler
     {
         tickets.Add(new Ticket(amt, desc));
     }
+
+    public override string ToString()
+    {
+        string output = "";
+        foreach (Ticket t in tickets)
+        {
+            output += t.ToString() + '\n';
+        }
+        return output;
+    }
 }

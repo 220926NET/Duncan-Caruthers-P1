@@ -89,7 +89,7 @@ public class UIHandler
         int selection = GetSelection();
         if (selection == 1)
         {
-            Console.WriteLine("Yee haw! this section of the system does not yet exist");
+            Console.WriteLine(tickets.ToString());
         }
         else if (selection == 2)
         {

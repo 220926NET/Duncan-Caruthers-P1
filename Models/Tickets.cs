@@ -82,4 +82,9 @@ public class Ticket
         Description = desc;
         Status = "pending";
     }
+
+    public override string ToString()
+    {
+        return "" + Amount + '\t' + Description + '\t' + Status;
+    }
 }
