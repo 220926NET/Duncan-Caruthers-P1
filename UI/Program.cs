@@ -12,9 +12,8 @@
         `-- Quit
 */
 
-using Login;
-using Users;
-using Tickets;
+using Models;
+using Services;
 
 while (true)
 {
