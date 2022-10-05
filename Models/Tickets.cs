@@ -1,4 +1,4 @@
-namespace Tickets;
+namespace Models;
 
 public class Ticket
 {
@@ -81,20 +81,5 @@ public class Ticket
         _description = "";
         Description = desc;
         Status = "pending";
-    }
-}
-
-public class TicketHandler
-{
-    private List<Ticket> tickets;
-
-    public TicketHandler()
-    {
-        tickets = new List<Ticket>();
-    }
-
-    public void addTicket(double amt, string desc)
-    {
-        tickets.Add(new Ticket(amt, desc));
     }
 }
