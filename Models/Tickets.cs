@@ -2,6 +2,8 @@ namespace Models;
 
 public class Ticket
 {
+
+    public User Creator { get; set; }
     private string _description;
     public string Description
     {
@@ -75,11 +77,12 @@ public class Ticket
         }
     }
 
-    public Ticket(double amt, string desc)
+    public Ticket(User creator, double amt, string desc)
     {
         Amount = amt;
         _description = "";
         Description = desc;
+        Creator = creator;
         Status = "pending";
     }
 

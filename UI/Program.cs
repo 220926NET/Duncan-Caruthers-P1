@@ -48,6 +48,7 @@ public class UIHandler
 {
     private static LoginHandler users = new LoginHandler();
     private static TicketHandler tickets = new TicketHandler();
+    private static User loggedInUser = new User("incorrect", "not possiable to use", false);
 
     public static int GetSelection()
     {
@@ -138,7 +139,10 @@ public class UIHandler
         int selection = GetSelection();
         if (selection == 1)
         {
-            Console.WriteLine("Yee haw! this part of the system does not exist yet");
+            foreach (Ticket t in tickets.GetTickets(loggedInUser))
+            {
+                Console.WriteLine(t.ToString());
+            }
         }
         else if (selection == 2)
         {
@@ -148,7 +152,7 @@ public class UIHandler
             string? desc = Console.ReadLine();
             if (desc != null)
             {
-                tickets.AddTicket(amt, desc);
+                tickets.AddTicket(loggedInUser, amt, desc);
                 Console.WriteLine("Ticket submitted");
             }
             else
@@ -185,6 +189,7 @@ public class UIHandler
             return;
         }
 
+        loggedInUser = temp;
         if (temp.IsManager)
         {
             ManagerInteraction();

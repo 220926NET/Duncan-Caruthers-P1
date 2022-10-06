@@ -12,14 +12,27 @@ public class TicketHandler
         tickets = new List<Ticket>();
     }
 
-    public void AddTicket(double amt, string desc)
+    public void AddTicket(User creator, double amt, string desc)
     {
-        tickets.Add(new Ticket(amt, desc));
+        tickets.Add(new Ticket(creator, amt, desc));
     }
 
     public Ticket GetTicket(int id)
     {
         return tickets.ElementAt(id);
+    }
+
+    public List<Ticket> GetTickets(User usr)
+    {
+        List<Ticket> temp = new List<Ticket>();
+        foreach (Ticket t in tickets)
+        {
+            if (t.Creator == usr)
+            {
+                temp.Add(t);
+            }
+        }
+        return temp;
     }
 
     public override string ToString()
@@ -28,6 +41,7 @@ public class TicketHandler
         for (int i = 0; i < tickets.Count; i++)
         {
             output += "" + i + '\t' + tickets.ElementAt(i).ToString() + '\n';
+
         }
         return output;
     }
