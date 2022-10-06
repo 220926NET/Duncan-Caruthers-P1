@@ -87,7 +87,7 @@ public class UIHandler
 
     public static void ManagerInteraction()
     {
-        Console.WriteLine("Welcome Manager!");
+        Console.WriteLine($"Welcome Manager, {loggedInUser}!");
         Console.WriteLine("----------------------------------------");
         Console.WriteLine(" [1] View Past Tickets");
         Console.WriteLine(" [2] Process Pending Tickets"); ;
@@ -135,7 +135,7 @@ public class UIHandler
 
     public static void EmployeeInteraction()
     {
-        Console.WriteLine("Welecome Employee!");
+        Console.WriteLine($"Welecome Employee, {loggedInUser}!");
         Console.WriteLine("----------------------------------------");
         Console.WriteLine(" [1] View Past Tickets");
         Console.WriteLine(" [2] Create Reimbursement Ticket");
