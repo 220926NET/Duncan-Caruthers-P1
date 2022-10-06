@@ -83,21 +83,47 @@ public class UIHandler
     {
         Console.WriteLine("Welcome Manager!");
         Console.WriteLine("----------------------------------------");
-        Console.WriteLine(" [1] View list");
-        Console.WriteLine(" [2] Exit");
+        Console.WriteLine(" [1] View Past Tickets");
+        Console.WriteLine(" [2] Process Pending Tickets"); ;
+        Console.WriteLine(" [3] Exit");
         Console.WriteLine("----------------------------------------");
         int selection = GetSelection();
         if (selection == 1)
         {
-            Console.WriteLine("Yee haw! this section of the system does not yet exist");
+            Console.WriteLine(tickets.ToString());
         }
         else if (selection == 2)
+        {
+            foreach (Ticket t in tickets.GetPending())
+            {
+                Console.WriteLine("Ticket: " + t.ToString());
+                Console.WriteLine("[1] Approve [2] Deny [3] Skip");
+                selection = GetSelection();
+                if (selection == 1)
+                {
+                    t.Status = "approved";
+                }
+                else if (selection == 2)
+                {
+                    t.Status = "denied";
+                }
+                else if (selection == 3)
+                {
+                    continue;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid Option skipping...");
+                }
+            }
+        }
+        else if (selection == 3)
         {
             Environment.Exit(0);
         }
         else
         {
-            Console.WriteLine("Invalid selection");
+            Console.WriteLine("Invalid Option");
         }
     }
 
@@ -122,7 +148,7 @@ public class UIHandler
             string? desc = Console.ReadLine();
             if (desc != null)
             {
-                tickets.addTicket(amt, desc);
+                tickets.AddTicket(amt, desc);
                 Console.WriteLine("Ticket submitted");
             }
             else
