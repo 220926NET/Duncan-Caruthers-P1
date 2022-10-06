@@ -36,7 +36,7 @@ while (true)
     else if (selection == 3)
     {
         // Quit
-        Environment.Exit(0);
+        UIHandler.DoExit(0);
     }
     else
     {
@@ -49,6 +49,11 @@ public class UIHandler
     private static LoginHandler users = new LoginHandler();
     private static TicketHandler tickets = new TicketHandler();
     private static User loggedInUser = new User("incorrect", "not possiable to use", false);
+
+    public static void DoExit(int code)
+    {
+        Environment.Exit(code);
+    }
 
     public static int GetSelection()
     {
@@ -120,7 +125,7 @@ public class UIHandler
         }
         else if (selection == 3)
         {
-            Environment.Exit(0);
+            DoExit(0);
         }
         else
         {
@@ -162,7 +167,7 @@ public class UIHandler
         }
         else if (selection == 3)
         {
-            Environment.Exit(0);
+            DoExit(0);
         }
         else
         {
