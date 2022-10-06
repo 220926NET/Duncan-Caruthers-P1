@@ -17,6 +17,7 @@ using Services;
 
 while (true)
 {
+    Console.Clear();
     Console.WriteLine("Welcome To the Reimbursemt System");
     Console.WriteLine("----------------------------------------");
     Console.WriteLine(" [1] Login");
@@ -40,7 +41,7 @@ while (true)
     }
     else
     {
-        Console.WriteLine("Invalid selection");
+        UIHandler.DoInputError("Invalid Seelction");
     }
 }
 
@@ -53,6 +54,13 @@ public class UIHandler
     public static void DoExit(int code)
     {
         Environment.Exit(code);
+    }
+
+    public static void DoInputError(string Message)
+    {
+        Console.WriteLine(Message);
+        Console.WriteLine("press enter to continue...");
+        Console.ReadLine();
     }
 
     public static int GetSelection()
@@ -87,6 +95,7 @@ public class UIHandler
 
     public static void ManagerInteraction()
     {
+        Console.Clear();
         Console.WriteLine($"Welcome Manager, {loggedInUser}!");
         Console.WriteLine("----------------------------------------");
         Console.WriteLine(" [1] View Past Tickets");
@@ -97,6 +106,7 @@ public class UIHandler
         if (selection == 1)
         {
             Console.WriteLine(tickets.ToString());
+            DoInputError("");
             ManagerInteraction();
         }
         else if (selection == 2)
@@ -131,7 +141,7 @@ public class UIHandler
         }
         else
         {
-            Console.WriteLine("Invalid Option");
+            DoInputError("Invalid Selection");
             ManagerInteraction();
         }
 
@@ -139,6 +149,7 @@ public class UIHandler
 
     public static void EmployeeInteraction()
     {
+        Console.Clear();
         Console.WriteLine($"Welecome Employee, {loggedInUser}!");
         Console.WriteLine("----------------------------------------");
         Console.WriteLine(" [1] View Past Tickets");
@@ -152,6 +163,7 @@ public class UIHandler
             {
                 Console.WriteLine(t.ToString());
             }
+            DoInputError("");
             EmployeeInteraction();
         }
         else if (selection == 2)
@@ -177,7 +189,7 @@ public class UIHandler
         }
         else
         {
-            Console.WriteLine("Invalid selection");
+            DoInputError("Invalid Selection");
             EmployeeInteraction();
         }
 
@@ -186,6 +198,7 @@ public class UIHandler
 
     public static void LoginInteraction()
     {
+        Console.Clear();
         Console.Write("Username: ");
         string? username = Console.ReadLine();
         Console.Write("Password: ");
@@ -198,7 +211,7 @@ public class UIHandler
         User? temp = users.login(username, password);
         if (temp == null)
         {
-            Console.WriteLine("Invalid Username or password");
+            DoInputError("Invalid Username or Password");
             return;
         }
 
@@ -215,7 +228,8 @@ public class UIHandler
 
     public static void RegisterInteraction()
     {
-        Console.Write("Will this user be a manager [y/N]?");
+        Console.Clear();
+        Console.Write("Will this user be a manager [y/n]? ");
         string? man = Console.ReadLine();
         if (man == null)
         {
@@ -232,7 +246,7 @@ public class UIHandler
         }
         else
         {
-            Console.WriteLine("Invalid Input");
+            DoInputError("Invalid Selection");
             return;
         }
 
@@ -251,7 +265,7 @@ public class UIHandler
         }
         else
         {
-            Console.WriteLine("Username taken");
+            DoInputError("Username already in use");
         }
     }
 }
