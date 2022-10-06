@@ -15,12 +15,15 @@ public class User
 
     public bool checkCredentials(string username, string password)
     {
-        if (Username.Equals(username) && Password.Equals(Password))
+        if (Username.Equals(username) && Password.Equals(password))
         {
             return true;
         }
         return false;
     }
 
-
+    public override string ToString()
+    {
+        return Username;
+    }
 }
