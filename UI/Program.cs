@@ -91,7 +91,7 @@ public class UIHandler
         Console.WriteLine("----------------------------------------");
         Console.WriteLine(" [1] View Past Tickets");
         Console.WriteLine(" [2] Process Pending Tickets"); ;
-        Console.WriteLine(" [3] Exit");
+        Console.WriteLine(" [3] Logout");
         Console.WriteLine("----------------------------------------");
         int selection = GetSelection();
         if (selection == 1)
@@ -127,13 +127,14 @@ public class UIHandler
         }
         else if (selection == 3)
         {
-            DoExit(0);
+            return;
         }
         else
         {
             Console.WriteLine("Invalid Option");
+            ManagerInteraction();
         }
-        ManagerInteraction();
+
     }
 
     public static void EmployeeInteraction()
@@ -142,7 +143,7 @@ public class UIHandler
         Console.WriteLine("----------------------------------------");
         Console.WriteLine(" [1] View Past Tickets");
         Console.WriteLine(" [2] Create Reimbursement Ticket");
-        Console.WriteLine(" [3] Exit");
+        Console.WriteLine(" [3] Logout");
         Console.WriteLine("----------------------------------------");
         int selection = GetSelection();
         if (selection == 1)
@@ -172,13 +173,14 @@ public class UIHandler
         }
         else if (selection == 3)
         {
-            DoExit(0);
+            return;
         }
         else
         {
             Console.WriteLine("Invalid selection");
+            EmployeeInteraction();
         }
-        EmployeeInteraction();
+
 
     }
 
