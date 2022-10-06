@@ -97,6 +97,7 @@ public class UIHandler
         if (selection == 1)
         {
             Console.WriteLine(tickets.ToString());
+            ManagerInteraction();
         }
         else if (selection == 2)
         {
@@ -122,6 +123,7 @@ public class UIHandler
                     Console.WriteLine("Invalid Option skipping...");
                 }
             }
+            ManagerInteraction();
         }
         else if (selection == 3)
         {
@@ -131,6 +133,7 @@ public class UIHandler
         {
             Console.WriteLine("Invalid Option");
         }
+        ManagerInteraction();
     }
 
     public static void EmployeeInteraction()
