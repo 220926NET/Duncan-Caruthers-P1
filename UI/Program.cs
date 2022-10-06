@@ -148,6 +148,7 @@ public class UIHandler
             {
                 Console.WriteLine(t.ToString());
             }
+            EmployeeInteraction();
         }
         else if (selection == 2)
         {
@@ -164,6 +165,7 @@ public class UIHandler
             {
                 Console.WriteLine("Cannot add null description ticket");
             }
+            EmployeeInteraction();
         }
         else if (selection == 3)
         {
@@ -173,6 +175,7 @@ public class UIHandler
         {
             Console.WriteLine("Invalid selection");
         }
+        EmployeeInteraction();
 
     }
 

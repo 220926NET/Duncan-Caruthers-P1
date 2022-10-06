@@ -22,5 +22,8 @@ public class User
         return false;
     }
 
-
+    public override string ToString()
+    {
+        return Username;
+    }
 }
