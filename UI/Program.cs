@@ -14,6 +14,7 @@
 
 using Models;
 using Services;
+using DataAccess;
 
 while (true)
 {
@@ -46,8 +47,8 @@ while (true)
 
 public class UIHandler
 {
-    private static LoginHandler users = new LoginHandler();
-    private static TicketHandler tickets = new TicketHandler();
+    private static LoginHandler users = new LoginHandler(new DatabaseStorage());
+    private static TicketHandler tickets = new TicketHandler(new DatabaseStorage());
     private static User loggedInUser = new User("incorrect", "not possiable to use", false);
 
     public static int GetSelection()
@@ -152,7 +153,7 @@ public class UIHandler
             string? desc = Console.ReadLine();
             if (desc != null)
             {
-                tickets.AddTicket(loggedInUser, amt, desc);
+                tickets.AddTicket(new Ticket(loggedInUser.Username, amt, desc));
                 Console.WriteLine("Ticket submitted");
             }
             else
@@ -232,7 +233,7 @@ public class UIHandler
             return;
         }
 
-        if (users.addUser(username, password, m))
+        if (users.addUser(new User(username, password, m)))
         {
             return;
         }
