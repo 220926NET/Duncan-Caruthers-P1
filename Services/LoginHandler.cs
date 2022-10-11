@@ -1,32 +1,26 @@
-namespace Services;
-
 using Models;
+using DataAccess;
+
+namespace Services;
 
 public class LoginHandler
 {
-    private List<User> users;
+    private IStorage storage;
 
-    public LoginHandler()
+    public LoginHandler(IStorage storage)
     {
-        users = new List<User>();
+        this.storage = storage;
     }
 
-    public bool addUser(string usr, string passwd, bool mgr)
+    public bool addUser(User usr)
     {
-        foreach (User u in users)
-        {
-            if (u.Username.Equals(usr))
-            {
-                return false;
-            }
-        }
-        users.Add(new User(usr, passwd, mgr));
+        storage.AddUser(usr);
         return true;
     }
 
     public User? login(string usr, string passwd)
     {
-        foreach (User u in users)
+        foreach (User u in storage.GetUsers())
         {
             if (u.checkCredentials(usr, passwd))
             {
