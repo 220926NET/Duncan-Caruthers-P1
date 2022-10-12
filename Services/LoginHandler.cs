@@ -12,7 +12,7 @@ public class LoginHandler
         this.storage = storage;
     }
 
-    public bool addUser(User usr)
+    public bool AddUser(User usr)
     {
         storage.AddUser(usr);
         return true;
