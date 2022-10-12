@@ -1,33 +1,33 @@
-namespace Services;
-
-
 using Models;
+using DataAccess;
+
+namespace Services;
 
 public class TicketHandler
 {
-    private List<Ticket> tickets;
+    private IStorage storage;
 
-    public TicketHandler()
+    public TicketHandler(IStorage storage)
     {
-        tickets = new List<Ticket>();
+        this.storage = storage;
     }
 
-    public void AddTicket(User creator, double amt, string desc)
+    public void AddTicket(Ticket ticket)
     {
-        tickets.Add(new Ticket(creator, amt, desc));
+        storage.AddTicket(ticket);
     }
 
-    public Ticket GetTicket(int id)
+    public Ticket? GetTicket(int id)
     {
-        return tickets.ElementAt(id);
+        return storage.GetTicket(id);
     }
 
     public List<Ticket> GetTickets(User usr)
     {
         List<Ticket> temp = new List<Ticket>();
-        foreach (Ticket t in tickets)
+        foreach (Ticket t in storage.GetTickets())
         {
-            if (t.Creator == usr)
+            if (t.Creator == usr.Username)
             {
                 temp.Add(t);
             }
@@ -38,6 +38,7 @@ public class TicketHandler
     public override string ToString()
     {
         string output = "";
+        List<Ticket> tickets = storage.GetTickets();
         for (int i = 0; i < tickets.Count; i++)
         {
             output += "" + i + '\t' + tickets.ElementAt(i).ToString() + '\n';
@@ -49,7 +50,7 @@ public class TicketHandler
     public List<Ticket> GetPending()
     {
         List<Ticket> temp = new List<Ticket>();
-        foreach (Ticket t in tickets)
+        foreach (Ticket t in storage.GetTickets())
         {
             if (t.Status == "pending")
             {
@@ -57,5 +58,10 @@ public class TicketHandler
             }
         }
         return temp;
+    }
+
+    public void UpdateTicket(int id, string v)
+    {
+        storage.UpdateTicket(id, v);
     }
 }

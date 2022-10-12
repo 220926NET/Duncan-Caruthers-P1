@@ -14,6 +14,7 @@
 
 using Models;
 using Services;
+using DataAccess;
 
 while (true)
 {
@@ -47,8 +48,8 @@ while (true)
 
 public class UIHandler
 {
-    private static LoginHandler users = new LoginHandler();
-    private static TicketHandler tickets = new TicketHandler();
+    private static LoginHandler users = new LoginHandler(new DatabaseStorage());
+    private static TicketHandler tickets = new TicketHandler(new DatabaseStorage());
     private static User loggedInUser = new User("incorrect", "not possiable to use", false);
 
     public static void DoExit(int code)
@@ -78,13 +79,13 @@ public class UIHandler
         return -1;
     }
 
-    public static double GetDouble()
+    public static decimal GetDecimal()
     {
         string? selection = Console.ReadLine();
         if (selection != null)
         {
-            double value;
-            bool check = double.TryParse(selection, out value);
+            decimal value;
+            bool check = decimal.TryParse(selection, out value);
             if (check)
             {
                 return value;
@@ -118,11 +119,11 @@ public class UIHandler
                 selection = GetSelection();
                 if (selection == 1)
                 {
-                    t.Status = "approved";
+                    tickets.UpdateTicket(t.Id, "approved");
                 }
                 else if (selection == 2)
                 {
-                    t.Status = "denied";
+                    tickets.UpdateTicket(t.Id, "denied");
                 }
                 else if (selection == 3)
                 {
@@ -169,12 +170,12 @@ public class UIHandler
         else if (selection == 2)
         {
             Console.Write("Reimbursement Amount: ");
-            double amt = GetDouble();
+            decimal amt = GetDecimal();
             Console.Write("Description of Ticket: ");
             string? desc = Console.ReadLine();
             if (desc != null)
             {
-                tickets.AddTicket(loggedInUser, amt, desc);
+                tickets.AddTicket(new Ticket(loggedInUser.Username, amt, desc));
                 Console.WriteLine("Ticket submitted");
             }
             else
@@ -259,7 +260,7 @@ public class UIHandler
             return;
         }
 
-        if (users.addUser(username, password, m))
+        if (users.AddUser(new User(username, password, m)))
         {
             return;
         }
