@@ -66,13 +66,13 @@ public class UIHandler
         return -1;
     }
 
-    public static double GetDouble()
+    public static decimal GetDecimal()
     {
         string? selection = Console.ReadLine();
         if (selection != null)
         {
-            double value;
-            bool check = double.TryParse(selection, out value);
+            decimal value;
+            bool check = decimal.TryParse(selection, out value);
             if (check)
             {
                 return value;
@@ -148,7 +148,7 @@ public class UIHandler
         else if (selection == 2)
         {
             Console.Write("Reimbursement Amount: ");
-            double amt = GetDouble();
+            decimal amt = GetDecimal();
             Console.Write("Description of Ticket: ");
             string? desc = Console.ReadLine();
             if (desc != null)

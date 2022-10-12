@@ -16,7 +16,7 @@ public class TicketHandler
         storage.AddTicket(ticket);
     }
 
-    public Ticket GetTicket(int id)
+    public Ticket? GetTicket(int id)
     {
         return storage.GetTicket(id);
     }

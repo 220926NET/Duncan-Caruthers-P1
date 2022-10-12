@@ -15,26 +15,78 @@ public class DatabaseStorage : IStorage
 
     public void AddTicket(Ticket ticket)
     {
-        throw new NotImplementedException();
+        connection.Open();
+        SqlCommand cmd = new SqlCommand("insert into Tickets (stat,creator,cost,descr) VALUES (@s,@cr,@cost,@descr);", connection);
+        cmd.Parameters.AddWithValue("@s", ticket.Status);
+        cmd.Parameters.AddWithValue("@cr", ticket.Creator);
+        cmd.Parameters.AddWithValue("@cost", ticket.Amount);
+        cmd.Parameters.AddWithValue("@descr", ticket.Description);
+        cmd.ExecuteNonQuery();
+
+        //int id = (int)cmd.ExecuteScalar();
+        //ticket.Id = id;
+        connection.Close();
     }
 
     public void AddUser(User usr)
     {
-        throw new NotImplementedException();
+        connection.Open();
+        SqlCommand cmd = new SqlCommand("insert into Users (usr,passwd,isManager) VALUES (@u,@p,@m);", connection);
+        cmd.Parameters.AddWithValue("@u", usr.Username);
+        cmd.Parameters.AddWithValue("@p", usr.Password);
+        cmd.Parameters.AddWithValue("@m", (usr.IsManager) ? 1 : 0);
+        cmd.ExecuteNonQuery();
+        connection.Close();
     }
 
-    public Ticket GetTicket(int id)
+    public Ticket? GetTicket(int id)
     {
-        throw new NotImplementedException();
+        connection.Open();
+        SqlCommand cmd = new SqlCommand("select * from Tickets where id = @i;", connection);
+        cmd.Parameters.AddWithValue("@i", id);
+
+        SqlDataReader reader = cmd.ExecuteReader();
+        if (!reader.HasRows) return null;
+
+        reader.Read();
+        Ticket ticket = new Ticket((int)reader["id"], (string)reader["stat"], (string)reader["creator"], (decimal)reader["cost"], (string)reader["descr"]);
+        connection.Close();
+        return ticket;
     }
 
     public List<Ticket> GetTickets()
     {
-        throw new NotImplementedException();
+        List<Ticket> tickets = new List<Ticket>();
+        connection.Open();
+        SqlCommand cmd = new SqlCommand("select * from Tickets;", connection);
+
+        SqlDataReader reader = cmd.ExecuteReader();
+        if (reader.HasRows)
+        {
+            while (reader.Read())
+            {
+                tickets.Add(new Ticket((int)reader["id"], (string)reader["stat"], (string)reader["creator"], (decimal)reader["cost"], (string)reader["descr"]));
+            }
+        }
+        connection.Close();
+        return tickets;
     }
 
     public List<User> GetUsers()
     {
-        throw new NotImplementedException();
+        List<User> users = new List<User>();
+        connection.Open();
+        SqlCommand cmd = new SqlCommand("select * from Users;", connection);
+
+        SqlDataReader reader = cmd.ExecuteReader();
+        if (reader.HasRows)
+        {
+            while (reader.Read())
+            {
+                users.Add(new User((string)reader["usr"], (string)reader["passwd"], ((int)reader["isManager"] == 0) ? false : true));
+            }
+        }
+        connection.Close();
+        return users;
     }
 }
