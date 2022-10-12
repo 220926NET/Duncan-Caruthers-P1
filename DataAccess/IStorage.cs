@@ -8,6 +8,6 @@ public interface IStorage
     void UpdateTicket(int id, string newStatus);
     Ticket? GetTicket(int id);
     List<Ticket> GetTickets();
-    void AddUser(User usr);
+    bool AddUser(User usr);
     List<User> GetUsers();
 }

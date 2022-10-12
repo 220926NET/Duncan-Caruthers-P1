@@ -28,15 +28,24 @@ public class DatabaseStorage : IStorage
         connection.Close();
     }
 
-    public void AddUser(User usr)
+    public bool AddUser(User usr)
     {
-        connection.Open();
-        SqlCommand cmd = new SqlCommand("insert into Users (usr,passwd,isManager) VALUES (@u,@p,@m);", connection);
-        cmd.Parameters.AddWithValue("@u", usr.Username);
-        cmd.Parameters.AddWithValue("@p", usr.Password);
-        cmd.Parameters.AddWithValue("@m", (usr.IsManager) ? 1 : 0);
-        cmd.ExecuteNonQuery();
-        connection.Close();
+        try
+        {
+            connection.Open();
+            SqlCommand cmd = new SqlCommand("insert into Users (usr,passwd,isManager) VALUES (@u,@p,@m);", connection);
+            cmd.Parameters.AddWithValue("@u", usr.Username);
+            cmd.Parameters.AddWithValue("@p", usr.Password);
+            cmd.Parameters.AddWithValue("@m", (usr.IsManager) ? 1 : 0);
+            cmd.ExecuteNonQuery();
+            connection.Close();
+            return true;
+        }
+        catch (SqlException)
+        {
+            connection.Close();
+            return false;
+        }
     }
 
     public Ticket? GetTicket(int id)

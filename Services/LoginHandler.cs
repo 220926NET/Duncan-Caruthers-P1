@@ -14,8 +14,7 @@ public class LoginHandler
 
     public bool AddUser(User usr)
     {
-        storage.AddUser(usr);
-        return true;
+        return storage.AddUser(usr);
     }
 
     public User? login(string usr, string passwd)

@@ -42,7 +42,7 @@ while (true)
     }
     else
     {
-        UIHandler.DoInputError("Invalid Seelction");
+        UIHandler.DoInputError("Invalid Selection");
     }
 }
 
