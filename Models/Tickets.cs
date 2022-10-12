@@ -27,6 +27,6 @@ public class Ticket
 
     public override string ToString()
     {
-        return "" + Id + "\t" + Status + "\t" + Creator + "\t" + Amount + "\t" + Description;
+        return Status + "\t\t" + Creator + "\t\t" + Amount + "\t\t" + Description;
     }
 }

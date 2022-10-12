@@ -119,11 +119,11 @@ public class UIHandler
                 selection = GetSelection();
                 if (selection == 1)
                 {
-                    t.Status = "approved";
+                    tickets.UpdateTicket(t.Id, "approved");
                 }
                 else if (selection == 2)
                 {
-                    t.Status = "denied";
+                    tickets.UpdateTicket(t.Id, "denied");
                 }
                 else if (selection == 3)
                 {

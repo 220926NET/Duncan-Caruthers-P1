@@ -89,4 +89,14 @@ public class DatabaseStorage : IStorage
         connection.Close();
         return users;
     }
+
+    public void UpdateTicket(int id, string newStatus)
+    {
+        connection.Open();
+        SqlCommand cmd = new SqlCommand("update Tickets set stat = @s where id = @i", connection);
+        cmd.Parameters.AddWithValue("@s", newStatus);
+        cmd.Parameters.AddWithValue("@i", id);
+        cmd.ExecuteNonQuery();
+        connection.Close();
+    }
 }

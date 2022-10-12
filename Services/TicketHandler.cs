@@ -1,5 +1,6 @@
 using Models;
 using DataAccess;
+
 namespace Services;
 
 public class TicketHandler
@@ -57,5 +58,10 @@ public class TicketHandler
             }
         }
         return temp;
+    }
+
+    public void UpdateTicket(int id, string v)
+    {
+        storage.UpdateTicket(id, v);
     }
 }
