@@ -171,6 +171,12 @@ public class UIHandler
         {
             Console.Write("Reimbursement Amount: ");
             decimal amt = GetDecimal();
+            if (amt < 0)
+            {
+                DoInputError("Invalid Amount given");
+                EmployeeInteraction();
+                return;
+            }
             Console.Write("Description of Ticket: ");
             string? desc = Console.ReadLine();
             if (desc != null)
