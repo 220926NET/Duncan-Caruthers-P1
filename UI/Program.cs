@@ -16,6 +16,12 @@ using Models;
 using Services;
 using DataAccess;
 
+if (!DatabaseStorage.IsTheDatabaseLive())
+{
+    UIHandler.DoInputError("It would appear the database is down");
+    UIHandler.DoExit(1);
+}
+
 while (true)
 {
     Console.Clear();

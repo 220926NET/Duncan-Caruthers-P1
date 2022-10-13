@@ -13,6 +13,23 @@ public class DatabaseStorage : IStorage
 
     }
 
+    public static bool IsTheDatabaseLive()
+    {
+        try
+        {
+            SqlConnection connection = new SqlConnection(File.ReadAllText("./connection_string.txt"));
+            connection.Open();
+            SqlCommand cmd = new SqlCommand(";", connection);
+            cmd.ExecuteNonQuery();
+            connection.Close();
+            return true;
+        }
+        catch (SqlException)
+        {
+            return false;
+        }
+    }
+
     public void AddTicket(Ticket ticket)
     {
         connection.Open();
