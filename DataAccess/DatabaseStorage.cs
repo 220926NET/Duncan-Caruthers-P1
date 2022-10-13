@@ -16,11 +16,11 @@ public class DatabaseStorage : IStorage
     public void AddTicket(Ticket ticket)
     {
         connection.Open();
-        SqlCommand cmd = new SqlCommand("insert into Tickets (stat,creator,cost,descr) VALUES (@s,@cr,@cost,@descr);", connection);
+        SqlCommand cmd = new SqlCommand("sp_insert_ticket @stat=@s,@creator=@c,@cost=@cr,@description=@d", connection);
         cmd.Parameters.AddWithValue("@s", ticket.Status);
-        cmd.Parameters.AddWithValue("@cr", ticket.Creator);
-        cmd.Parameters.AddWithValue("@cost", ticket.Amount);
-        cmd.Parameters.AddWithValue("@descr", ticket.Description);
+        cmd.Parameters.AddWithValue("@c", ticket.Creator);
+        cmd.Parameters.AddWithValue("@cr", ticket.Amount);
+        cmd.Parameters.AddWithValue("@d", ticket.Description);
         cmd.ExecuteNonQuery();
 
         //int id = (int)cmd.ExecuteScalar();
@@ -33,10 +33,10 @@ public class DatabaseStorage : IStorage
         try
         {
             connection.Open();
-            SqlCommand cmd = new SqlCommand("insert into Users (usr,passwd,isManager) VALUES (@u,@p,@m);", connection);
+            SqlCommand cmd = new SqlCommand("sp_insert_user @usr=@u,@passwd=@p,@isManager=@i;", connection);
             cmd.Parameters.AddWithValue("@u", usr.Username);
             cmd.Parameters.AddWithValue("@p", usr.Password);
-            cmd.Parameters.AddWithValue("@m", (usr.IsManager) ? 1 : 0);
+            cmd.Parameters.AddWithValue("@i", (usr.IsManager) ? 1 : 0);
             cmd.ExecuteNonQuery();
             connection.Close();
             return true;
