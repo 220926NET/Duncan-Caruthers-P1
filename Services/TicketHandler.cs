@@ -35,6 +35,11 @@ public class TicketHandler
         return temp;
     }
 
+    public List<Ticket> GetTickets()
+    {
+        return storage.GetTickets();
+    }
+
     public override string ToString()
     {
         string output = "";
