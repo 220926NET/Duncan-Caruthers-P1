@@ -271,8 +271,9 @@ public class UIHandler
         {
             return;
         }
-
-        if (users.AddUser(new User(username, password, m)))
+        User temp = new User(username, "", m);
+        temp.Password = User.Hash(password, temp.Salt);
+        if (users.AddUser(temp))
         {
             return;
         }
