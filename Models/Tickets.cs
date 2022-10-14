@@ -27,6 +27,6 @@ public class Ticket
 
     public override string ToString()
     {
-        return Status + "\t\t" + Creator + "\t\t" + Amount + "\t\t" + Description;
+        return $"|{" " + Status,-20}|{" " + Creator,-20}|{" " + Amount,-20}|{" " + Description}";
     }
 }

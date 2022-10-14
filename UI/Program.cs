@@ -112,7 +112,14 @@ public class UIHandler
         int selection = GetSelection();
         if (selection == 1)
         {
-            Console.WriteLine(tickets.ToString());
+            Console.WriteLine("------------------------------------------------------------------------------------------------");
+            Console.WriteLine($"|{" Status ",-20}|{" Creator ",-20}|{" Amount ",-20}|{" Description "}");
+            Console.WriteLine("------------------------------------------------------------------------------------------------");
+            foreach (Ticket t in tickets.GetTickets())
+            {
+                Console.WriteLine(t.ToString());
+                Console.WriteLine("------------------------------------------------------------------------------------------------");
+            }
             DoInputError("");
             ManagerInteraction();
         }
@@ -166,9 +173,14 @@ public class UIHandler
         int selection = GetSelection();
         if (selection == 1)
         {
+
+            Console.WriteLine("------------------------------------------------------------------------------------------------");
+            Console.WriteLine($"|{" Status ",-20}|{" Creator ",-20}|{" Amount ",-20}|{" Description "}");
+            Console.WriteLine("------------------------------------------------------------------------------------------------");
             foreach (Ticket t in tickets.GetTickets(loggedInUser))
             {
                 Console.WriteLine(t.ToString());
+                Console.WriteLine("------------------------------------------------------------------------------------------------");
             }
             DoInputError("");
             EmployeeInteraction();
