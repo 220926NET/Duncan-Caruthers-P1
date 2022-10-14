@@ -50,11 +50,13 @@ public class DatabaseStorage : IStorage
         try
         {
             connection.Open();
-            SqlCommand cmd = new SqlCommand("sp_insert_user @usr=@u,@passwd=@p,@isManager=@i;", connection);
+            SqlCommand cmd = new SqlCommand("insert into Users values (@u,@p,@i,@s);", connection);
             cmd.Parameters.AddWithValue("@u", usr.Username);
             cmd.Parameters.AddWithValue("@p", usr.Password);
             cmd.Parameters.AddWithValue("@i", (usr.IsManager) ? 1 : 0);
+            cmd.Parameters.AddWithValue("@s", Convert.ToHexString(usr.Salt));
             cmd.ExecuteNonQuery();
+
             connection.Close();
             return true;
         }
@@ -109,7 +111,11 @@ public class DatabaseStorage : IStorage
         {
             while (reader.Read())
             {
-                users.Add(new User((string)reader["usr"], (string)reader["passwd"], ((int)reader["isManager"] == 0) ? false : true));
+                User temp = new User((string)reader["usr"], (string)reader["passwd"], ((int)reader["isManager"] == 0) ? false : true);
+
+                temp.Salt = Convert.FromHexString((string)reader["salt"]);
+
+                users.Add(temp);
             }
         }
         connection.Close();
