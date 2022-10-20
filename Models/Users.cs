@@ -4,6 +4,7 @@ namespace Models;
 
 public class User
 {
+    public Guid Id { get; set; }
     public string Username { get; set; }
     public string Password { get; set; }
     public bool IsManager { get; set; }
@@ -12,6 +13,15 @@ public class User
 
     public User(string username, string password, bool mgr)
     {
+        Id = Guid.NewGuid();
+        Username = username;
+        Password = password;
+        IsManager = mgr;
+    }
+
+    public User(Guid id, string username, string password, bool mgr)
+    {
+        Id = id;
         Username = username;
         Password = password;
         IsManager = mgr;

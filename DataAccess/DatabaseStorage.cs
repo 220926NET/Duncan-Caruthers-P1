@@ -50,7 +50,8 @@ public class DatabaseStorage : IStorage
         try
         {
             connection.Open();
-            SqlCommand cmd = new SqlCommand("insert into Users values (@u,@p,@i,@s);", connection);
+            SqlCommand cmd = new SqlCommand("insert into Users values (@id,@u,@p,@i,@s);", connection);
+            cmd.Parameters.AddWithValue("@id", usr.Id);
             cmd.Parameters.AddWithValue("@u", usr.Username);
             cmd.Parameters.AddWithValue("@p", usr.Password);
             cmd.Parameters.AddWithValue("@i", (usr.IsManager) ? 1 : 0);
@@ -111,7 +112,7 @@ public class DatabaseStorage : IStorage
         {
             while (reader.Read())
             {
-                User temp = new User((string)reader["usr"], (string)reader["passwd"], ((int)reader["isManager"] == 0) ? false : true);
+                User temp = new User((Guid)reader["id"], (string)reader["usr"], (string)reader["passwd"], ((int)reader["isManager"] == 0) ? false : true);
 
                 temp.Salt = Convert.FromHexString((string)reader["salt"]);
 

@@ -1,4 +1,8 @@
+using System.Collections.Specialized;
+using DataAccess;
 using Microsoft.AspNetCore.Mvc;
+using Models;
+using Services;
 
 namespace API.Controllers;
 
@@ -7,24 +11,49 @@ namespace API.Controllers;
 public class ERSController : ControllerBase
 {
     private readonly ILogger<ERSController> _logger;
-
+    private readonly LoginHandler _users;
+    private readonly TicketHandler _tickets;
     public ERSController(ILogger<ERSController> logger)
     {
         _logger = logger;
+        _users = new(new DatabaseStorage());
+        _tickets = new(new DatabaseStorage());
     }
 
     [HttpPost(Name = "RegisterUser")]
-    [Route("register/{userName}")]
-    public ActionResult<HttpResponse> RegisterUser(string userName)
+    [Route("register")]
+    public ActionResult RegisterUser()
     {
-        throw new NotImplementedException();
+        if (ModelState.IsValid)
+        {
+            FormCollection form = (FormCollection)Request.Form;
+            Models.User temp = new Models.User(form["username"], "", false);
+            temp.Password = Models.User.Hash(form["password"], temp.Salt);
+            if (_users.AddUser(temp))
+            {
+                return Ok(new { Username = form["username"] });
+            }
+            return BadRequest("Username is already in use");
+        }
+        return BadRequest("Invalid model state");
     }
 
     [HttpPost(Name = "LoginUser")]
-    [Route("login/{userName}")]
-    public ActionResult<HttpResponse> LoginUser(string userName)
+    [Route("login")]
+    public ActionResult LoginUser()
     {
-        throw new NotImplementedException();
+        if (ModelState.IsValid)
+        {
+            FormCollection form = (FormCollection)Request.Form;
+            Models.User temp = new Models.User(form["username"], "", false);
+            temp.Password = Models.User.Hash(form["password"], temp.Salt);
+            if (_users.AddUser(temp))
+            {
+                return Ok(new { Username = form["username"] });
+            }
+            return BadRequest("Username is already in use");
+        }
+        return BadRequest("Invalid model state");
     }
 
     [HttpPost(Name = "SubmitTicket")]
