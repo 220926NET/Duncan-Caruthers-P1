@@ -45,13 +45,12 @@ public class ERSController : ControllerBase
         if (ModelState.IsValid)
         {
             FormCollection form = (FormCollection)Request.Form;
-            Models.User temp = new Models.User(form["username"], "", false);
-            temp.Password = Models.User.Hash(form["password"], temp.Salt);
-            if (_users.AddUser(temp))
+            Models.User? temp = _users.login(form["username"], form["password"]);
+            if (temp != null)
             {
-                return Ok(new { Username = form["username"] });
+                return Ok(new { Id = temp.Id });
             }
-            return BadRequest("Username is already in use");
+            return Unauthorized("Username or password is invalid");
         }
         return BadRequest("Invalid model state");
     }
