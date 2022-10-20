@@ -56,10 +56,42 @@ public class ERSController : ControllerBase
     }
 
     [HttpPost(Name = "SubmitTicket")]
-    [Route("ticket/{userName}/submit")]
-    public ActionResult<HttpResponse> SubmitTicket(string userName)
+    [Route("ticket/submit")]
+    public ActionResult<HttpResponse> SubmitTicket()
     {
-        throw new NotImplementedException();
+        if (ModelState.IsValid)
+        {
+            FormCollection form = (FormCollection)Request.Form;
+
+            if (string.IsNullOrEmpty(form["id"]) || string.IsNullOrEmpty(form["description"]) || string.IsNullOrEmpty(form["amount"]))
+            {
+                return BadRequest("One of the nessasary form values is missing!!");
+            }
+
+            Guid id;
+            if (Guid.TryParse(form["id"], out id))
+            {
+                Models.User? temp = _users.GetUser(id);
+                if (temp != null)
+                {
+                    decimal amt;
+                    Console.WriteLine(form["amount"]);
+                    if (decimal.TryParse(form["amount"], out amt))
+                    {
+
+                        _tickets.AddTicket(new Ticket(-1, "pending", temp.Username, amt, form["description"]));
+                        return Ok("Success!");
+                    }
+                    return BadRequest("Improper Amount form");
+                }
+                return Unauthorized("This is not a register user id");
+            }
+            else
+            {
+                return BadRequest("Improper ID");
+            }
+        }
+        return BadRequest("Invalid model state");
     }
 
     [HttpGet(Name = "ViewAll")]

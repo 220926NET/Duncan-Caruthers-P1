@@ -28,4 +28,17 @@ public class LoginHandler
         }
         return null;
     }
+
+    public User? GetUser(Guid id)
+    {
+        List<User> users = storage.GetUsers();
+        foreach (User u in users)
+        {
+            if (id == u.Id)
+            {
+                return u;
+            }
+        }
+        return null;
+    }
 }
