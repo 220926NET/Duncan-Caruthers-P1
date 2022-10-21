@@ -97,7 +97,41 @@ public class ERSController : ControllerBase
     [Route("ticket/veiw")]
     public ActionResult ViewAll()
     {
-        throw new NotImplementedException();
+        if (ModelState.IsValid)
+        {
+            FormCollection form = (FormCollection)Request.Form;
+
+            if (string.IsNullOrEmpty(form["id"]))
+            {
+                return BadRequest("Such a request needs a user id in the body");
+            }
+
+            Guid id;
+            if (Guid.TryParse(form["id"], out id))
+            {
+                Models.User? temp = _users.GetUser(id);
+                if (temp != null)
+                {
+                    if (temp.IsManager) return Ok(_tickets.GetTickets());
+                    List<Ticket> tickets = _tickets.GetTickets();
+                    List<Ticket> list = new List<Ticket>();
+                    foreach (Ticket t in tickets)
+                    {
+                        if (t.Creator.Equals(temp.Username))
+                        {
+                            list.Add(t);
+                        }
+                    }
+                    return Ok(list);
+                }
+                return Unauthorized("This is not a register user id");
+            }
+            else
+            {
+                return BadRequest("Improper ID");
+            }
+        }
+        return BadRequest("Invalid model state");
     }
 
     [HttpGet(Name = "ViewByStatus")]
