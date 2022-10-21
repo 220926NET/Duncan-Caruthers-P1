@@ -57,7 +57,7 @@ public class ERSController : ControllerBase
 
     [HttpPost(Name = "SubmitTicket")]
     [Route("ticket/submit")]
-    public ActionResult<HttpResponse> SubmitTicket()
+    public ActionResult SubmitTicket()
     {
         if (ModelState.IsValid)
         {
@@ -75,7 +75,6 @@ public class ERSController : ControllerBase
                 if (temp != null)
                 {
                     decimal amt;
-                    Console.WriteLine(form["amount"]);
                     if (decimal.TryParse(form["amount"], out amt))
                     {
 
@@ -95,23 +94,78 @@ public class ERSController : ControllerBase
     }
 
     [HttpGet(Name = "ViewAll")]
-    [Route("ticket/{userName}/veiw")]
-    public ActionResult<HttpResponse> ViewAll(string userName)
+    [Route("ticket/veiw")]
+    public ActionResult ViewAll()
     {
         throw new NotImplementedException();
     }
 
     [HttpGet(Name = "ViewByStatus")]
-    [Route("ticket/{userName}/veiw/{status}")]
-    public ActionResult<HttpResponse> ViewByStatus(string userName, string status)
+    [Route("ticket/veiw/{status}")]
+    public ActionResult ViewByStatus(string status)
     {
         throw new NotImplementedException();
     }
 
-    [HttpPut(Name = "ProcessTicket")]
-    [Route("ticket/process/{id}/{status}")]
-    public ActionResult<HttpResponse> ProcessTicket(int id, string status)
+    [HttpPut(Name = "DenyTicket")]
+    [Route("ticket/deny/{id}")]
+    public ActionResult DenyTicket(int id)
     {
-        throw new NotImplementedException();
+        if (ModelState.IsValid)
+        {
+            FormCollection form = (FormCollection)Request.Form;
+            if (string.IsNullOrEmpty(form["id"]))
+            {
+                return BadRequest("This request requires an ID");
+            }
+            Guid guid;
+            if (!Guid.TryParse(form["id"], out guid))
+            {
+                return BadRequest("The id is in inproper form");
+            }
+            User? temp = _users.GetUser(guid);
+            if (temp == null)
+            {
+                return Unauthorized("Not a valid user id");
+            }
+            if (!temp.IsManager)
+            {
+                return Unauthorized($"User {temp.Username} is not a manager");
+            }
+            _tickets.UpdateTicket(id, "denied");
+            return Ok("Status updated");
+        }
+        return BadRequest("Invalid Model State");
+    }
+
+    [HttpPut(Name = "ApproveTicket")]
+    [Route("ticket/approve/{id}")]
+    public ActionResult ApproveTicket(int id)
+    {
+        if (ModelState.IsValid)
+        {
+            FormCollection form = (FormCollection)Request.Form;
+            if (string.IsNullOrEmpty(form["id"]))
+            {
+                return BadRequest("This request requires an ID");
+            }
+            Guid guid;
+            if (!Guid.TryParse(form["id"], out guid))
+            {
+                return BadRequest("The id is in inproper form");
+            }
+            User? temp = _users.GetUser(guid);
+            if (temp == null)
+            {
+                return Unauthorized("Not a valid user id");
+            }
+            if (!temp.IsManager)
+            {
+                return Unauthorized($"User {temp.Username} is not a manager");
+            }
+            _tickets.UpdateTicket(id, "approved");
+            return Ok("Status updated");
+        }
+        return BadRequest("Invalid Model State");
     }
 }
