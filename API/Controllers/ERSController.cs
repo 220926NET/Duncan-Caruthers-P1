@@ -138,7 +138,54 @@ public class ERSController : ControllerBase
     [Route("ticket/veiw/{status}")]
     public ActionResult ViewByStatus(string status)
     {
-        throw new NotImplementedException();
+        if (ModelState.IsValid)
+        {
+            FormCollection form = (FormCollection)Request.Form;
+
+            if (string.IsNullOrEmpty(form["id"]))
+            {
+                return BadRequest("Such a request needs a user id in the body");
+            }
+
+            Guid id;
+            if (Guid.TryParse(form["id"], out id))
+            {
+                Models.User? temp = _users.GetUser(id);
+                if (temp != null)
+                {
+                    if (temp.IsManager)
+                    {
+                        List<Ticket> ticketsAll = _tickets.GetTickets();
+                        List<Ticket> l = new List<Ticket>();
+                        foreach (Ticket t in ticketsAll)
+                        {
+                            if (t.Status.Equals(status))
+                            {
+                                l.Add(t);
+                            }
+                        }
+                        return Ok(l);
+                    }
+
+                    List<Ticket> tickets = _tickets.GetTickets();
+                    List<Ticket> list = new List<Ticket>();
+                    foreach (Ticket t in tickets)
+                    {
+                        if (t.Creator.Equals(temp.Username) && t.Status.Equals(status))
+                        {
+                            list.Add(t);
+                        }
+                    }
+                    return Ok(list);
+                }
+                return Unauthorized("This is not a register user id");
+            }
+            else
+            {
+                return BadRequest("Improper ID");
+            }
+        }
+        return BadRequest("Invalid model state");
     }
 
     [HttpPut(Name = "DenyTicket")]

@@ -7,4 +7,4 @@ User admin = new User("admin", "", true);
 admin.Password = User.Hash("admin", admin.Salt);
 
 LoginHandler handeler = new LoginHandler(new DatabaseStorage());
-handeler.AddUser(admin);
+Console.WriteLine(handeler.AddUser(admin));
