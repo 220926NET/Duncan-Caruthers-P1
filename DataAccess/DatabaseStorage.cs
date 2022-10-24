@@ -34,10 +34,10 @@ public class DatabaseStorage : IStorage
     {
         connection.Open();
         SqlCommand cmd = new SqlCommand("sp_insert_ticket @stat=@s,@creator=@c,@cost=@cr,@description=@d", connection);
-        cmd.Parameters.AddWithValue("@s", ticket.Status);
-        cmd.Parameters.AddWithValue("@c", ticket.Creator);
-        cmd.Parameters.AddWithValue("@cr", ticket.Amount);
-        cmd.Parameters.AddWithValue("@d", ticket.Description);
+        cmd.Parameters.AddWithValue("@s", ticket.status);
+        cmd.Parameters.AddWithValue("@c", ticket.creator);
+        cmd.Parameters.AddWithValue("@cr", ticket.amount);
+        cmd.Parameters.AddWithValue("@d", ticket.description);
         cmd.ExecuteNonQuery();
 
         //int id = (int)cmd.ExecuteScalar();
@@ -51,10 +51,10 @@ public class DatabaseStorage : IStorage
         {
             connection.Open();
             SqlCommand cmd = new SqlCommand("insert into Users values (@id,@u,@p,@i,@s);", connection);
-            cmd.Parameters.AddWithValue("@id", usr.Id);
-            cmd.Parameters.AddWithValue("@u", usr.Username);
-            cmd.Parameters.AddWithValue("@p", usr.Password);
-            cmd.Parameters.AddWithValue("@i", (usr.IsManager) ? 1 : 0);
+            cmd.Parameters.AddWithValue("@id", usr.id);
+            cmd.Parameters.AddWithValue("@u", usr.username);
+            cmd.Parameters.AddWithValue("@p", usr.password);
+            cmd.Parameters.AddWithValue("@i", (usr.ismanager) ? 1 : 0);
             cmd.Parameters.AddWithValue("@s", Convert.ToHexString(usr.Salt));
             cmd.ExecuteNonQuery();
 
@@ -123,13 +123,27 @@ public class DatabaseStorage : IStorage
         return users;
     }
 
-    public void UpdateTicket(int id, string newStatus)
+    public bool UpdateTicket(int id, string newStatus)
     {
         connection.Open();
+
+        SqlCommand c = new SqlCommand("select * from Tickets where id = @i;", connection);
+        c.Parameters.AddWithValue("@i", id);
+        SqlDataReader r = c.ExecuteReader();
+        if (!r.HasRows)
+        {
+            r.Close();
+            connection.Close();
+            return false;
+        }
+        r.Close();
+
         SqlCommand cmd = new SqlCommand("update Tickets set stat = @s where id = @i", connection);
         cmd.Parameters.AddWithValue("@s", newStatus);
         cmd.Parameters.AddWithValue("@i", id);
         cmd.ExecuteNonQuery();
+
         connection.Close();
+        return true;
     }
 }

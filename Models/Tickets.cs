@@ -2,31 +2,32 @@ namespace Models;
 
 public class Ticket
 {
-    public int Id { get; set; } = -1;
-    public string Status { get; set; } = "pending";
-    public string Creator { get; set; }
-    public decimal Amount { get; set; }
-    public string Description { get; set; }
+    public int id { get; set; } = -1;
+    public string status { get; set; } = "pending";
+    public string creator { get; set; } = "";
+    public decimal amount { get; set; }
+    public string description { get; set; } = "";
 
+    public Ticket() { }
 
     public Ticket(int id, string status, string creator, decimal amount, string description)
     {
-        Id = id;
-        Status = status;
-        Creator = creator;
-        Amount = amount;
-        Description = description;
+        this.id = id;
+        this.status = status;
+        this.creator = creator;
+        this.amount = amount;
+        this.description = description;
     }
 
     public Ticket(string creator, decimal amount, string description)
     {
-        Creator = creator;
-        Amount = amount;
-        Description = description;
+        this.creator = creator;
+        this.amount = amount;
+        this.description = description;
     }
 
     public override string ToString()
     {
-        return $"|{" " + Status,-20}|{" " + Creator,-20}|{" " + Amount,-20}|{" " + Description}";
+        return $"|{" " + status,-20}|{" " + creator,-20}|{" " + amount,-20}|{" " + description}";
     }
 }

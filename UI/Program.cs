@@ -152,7 +152,7 @@ public class UIHandler
                     selection = GetSelection();
                     if (selection == 1)
                     {
-                        HttpResponseMessage m = await client.PutAsync($"ERS/ticket/approve/{t.Id}", new FormUrlEncodedContent(new[] {
+                        HttpResponseMessage m = await client.PutAsync($"ERS/ticket/approve/{t.id}", new FormUrlEncodedContent(new[] {
                             new KeyValuePair<string,string> ("id",id.ToString())
                         }));
 
@@ -163,7 +163,7 @@ public class UIHandler
                     }
                     else if (selection == 2)
                     {
-                        HttpResponseMessage m = await client.PutAsync($"ERS/ticket/denied/{t.Id}", new FormUrlEncodedContent(new[] {
+                        HttpResponseMessage m = await client.PutAsync($"ERS/ticket/deny/{t.id}", new FormUrlEncodedContent(new[] {
                             new KeyValuePair<string,string> ("id",id.ToString())
                         }));
 
@@ -213,7 +213,8 @@ public class UIHandler
             Console.WriteLine($"|{" Status ",-20}|{" Creator ",-20}|{" Amount ",-20}|{" Description "}");
             Console.WriteLine("------------------------------------------------------------------------------------------------");
             HttpResponseMessage msg = await client.GetAsync($"ERS/ticket/veiw/{id}");
-            List<Ticket>? tickets = JsonSerializer.Deserialize<List<Ticket>>(await msg.Content.ReadAsStringAsync());
+            string obj = await msg.Content.ReadAsStringAsync();
+            List<Ticket>? tickets = JsonSerializer.Deserialize<List<Ticket>>(obj);
 
             if (tickets == null)
             {
@@ -291,16 +292,19 @@ public class UIHandler
             new KeyValuePair<string,string>("username",username),
             new KeyValuePair<string, string>("password",password)
         }));
-        User? temp = JsonSerializer.Deserialize<User>(await msg.Content.ReadAsStringAsync());
 
-        if (temp == null)
+        if (msg.StatusCode != System.Net.HttpStatusCode.OK)
         {
             DoInputError("Invalid Username or Password");
             return;
         }
 
-        id = temp.Id;
-        if (temp.IsManager)
+        string obj = await msg.Content.ReadAsStringAsync();
+        User? temp = JsonSerializer.Deserialize<User>(obj);
+
+
+        id = temp!.id;
+        if (temp.ismanager)
         {
             await ManagerInteraction();
         }

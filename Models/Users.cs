@@ -4,10 +4,10 @@ namespace Models;
 
 public class User
 {
-    public Guid Id { get; set; }
-    public string Username { get; set; }
-    public string Password { get; set; }
-    public bool IsManager { get; set; }
+    public Guid id { get; set; }
+    public string username { get; set; } = "";
+    public string password { get; set; } = "";
+    public bool ismanager { get; set; }
 
     public byte[] Salt { get; set; } = RandomNumberGenerator.GetBytes(512);
 
@@ -15,23 +15,23 @@ public class User
 
     public User(string username, string password, bool mgr)
     {
-        Id = Guid.NewGuid();
-        Username = username;
-        Password = password;
-        IsManager = mgr;
+        id = Guid.NewGuid();
+        this.username = username;
+        this.password = password;
+        ismanager = mgr;
     }
 
     public User(Guid id, string username, string password, bool mgr)
     {
-        Id = id;
-        Username = username;
-        Password = password;
-        IsManager = mgr;
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        ismanager = mgr;
     }
 
     public bool checkCredentials(string username, string password)
     {
-        if (Username.Equals(username) && Password.Equals(User.Hash(password, Salt)))
+        if (username.Equals(username) && this.password.Equals(User.Hash(password, Salt)))
         {
             return true;
         }
@@ -40,7 +40,7 @@ public class User
 
     public override string ToString()
     {
-        return Username;
+        return username;
     }
 
     public static string Hash(string input, byte[] salt)

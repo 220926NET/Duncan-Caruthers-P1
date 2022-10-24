@@ -27,7 +27,7 @@ public class TicketHandler
         List<Ticket> temp = new List<Ticket>();
         foreach (Ticket t in storage.GetTickets())
         {
-            if (t.Creator == usr.Username)
+            if (t.creator == usr.username)
             {
                 temp.Add(t);
             }
@@ -57,7 +57,7 @@ public class TicketHandler
         List<Ticket> temp = new List<Ticket>();
         foreach (Ticket t in storage.GetTickets())
         {
-            if (t.Status == "pending")
+            if (t.status == "pending")
             {
                 temp.Add(t);
             }
@@ -65,8 +65,8 @@ public class TicketHandler
         return temp;
     }
 
-    public void UpdateTicket(int id, string v)
+    public bool UpdateTicket(int id, string v)
     {
-        storage.UpdateTicket(id, v);
+        return storage.UpdateTicket(id, v);
     }
 }

@@ -28,7 +28,7 @@ public class ERSController : ControllerBase
         {
             FormCollection form = (FormCollection)Request.Form;
             Models.User temp = new Models.User(form["username"], "", false);
-            temp.Password = Models.User.Hash(form["password"], temp.Salt);
+            temp.password = Models.User.Hash(form["password"], temp.Salt);
             if (_users.AddUser(temp))
             {
                 return Ok(new { Username = form["username"] });
@@ -48,7 +48,7 @@ public class ERSController : ControllerBase
             Models.User? temp = _users.login(form["username"], form["password"]);
             if (temp != null)
             {
-                return Ok(new { Id = temp.Id, IsManager = temp.IsManager });
+                return Ok(temp);
             }
             return Unauthorized("Username or password is invalid");
         }
@@ -78,7 +78,7 @@ public class ERSController : ControllerBase
                     if (decimal.TryParse(form["amount"], out amt))
                     {
 
-                        _tickets.AddTicket(new Ticket(-1, "pending", temp.Username, amt, form["description"]));
+                        _tickets.AddTicket(new Ticket(-1, "pending", temp.username, amt, form["description"]));
                         return Ok("Success!");
                     }
                     return BadRequest("Improper Amount form");
@@ -102,12 +102,12 @@ public class ERSController : ControllerBase
             Models.User? temp = _users.GetUser(id);
             if (temp != null)
             {
-                if (temp.IsManager) return Ok(_tickets.GetTickets());
+                if (temp.ismanager) return Ok(_tickets.GetTickets());
                 List<Ticket> tickets = _tickets.GetTickets();
                 List<Ticket> list = new List<Ticket>();
                 foreach (Ticket t in tickets)
                 {
-                    if (t.Creator.Equals(temp.Username))
+                    if (t.creator.Equals(temp.username))
                     {
                         list.Add(t);
                     }
@@ -128,13 +128,13 @@ public class ERSController : ControllerBase
             Models.User? temp = _users.GetUser(id);
             if (temp != null)
             {
-                if (temp.IsManager)
+                if (temp.ismanager)
                 {
                     List<Ticket> ticketsAll = _tickets.GetTickets();
                     List<Ticket> l = new List<Ticket>();
                     foreach (Ticket t in ticketsAll)
                     {
-                        if (t.Status.Equals(status))
+                        if (t.status.Equals(status))
                         {
                             l.Add(t);
                         }
@@ -146,7 +146,7 @@ public class ERSController : ControllerBase
                 List<Ticket> list = new List<Ticket>();
                 foreach (Ticket t in tickets)
                 {
-                    if (t.Creator.Equals(temp.Username) && t.Status.Equals(status))
+                    if (t.creator.Equals(temp.username) && t.status.Equals(status))
                     {
                         list.Add(t);
                     }
@@ -179,12 +179,18 @@ public class ERSController : ControllerBase
             {
                 return Unauthorized("Not a valid user id");
             }
-            if (!temp.IsManager)
+            if (!temp.ismanager)
             {
-                return Unauthorized($"User {temp.Username} is not a manager");
+                return Unauthorized($"User {temp.username} is not a manager");
             }
-            _tickets.UpdateTicket(id, "denied");
-            return Ok("Status updated");
+            if (_tickets.UpdateTicket(id, "denied"))
+            {
+                return Ok("Status updated");
+            }
+            else
+            {
+                return BadRequest("Cannot update non existent or non pending ticket");
+            }
         }
         return BadRequest("Invalid Model State");
     }
@@ -210,12 +216,18 @@ public class ERSController : ControllerBase
             {
                 return Unauthorized("Not a valid user id");
             }
-            if (!temp.IsManager)
+            if (!temp.ismanager)
             {
-                return Unauthorized($"User {temp.Username} is not a manager");
+                return Unauthorized($"User {temp.username} is not a manager");
             }
-            _tickets.UpdateTicket(id, "approved");
-            return Ok("Status updated");
+            if (_tickets.UpdateTicket(id, "approved"))
+            {
+                return Ok("Status updated");
+            }
+            else
+            {
+                return BadRequest("Cannot update non existent or non pending ticket");
+            }
         }
         return BadRequest("Invalid Model State");
     }
