@@ -34,7 +34,7 @@ public class LoginHandler
         List<User> users = storage.GetUsers();
         foreach (User u in users)
         {
-            if (id == u.Id)
+            if (id == u.id)
             {
                 return u;
             }
