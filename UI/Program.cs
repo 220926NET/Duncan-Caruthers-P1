@@ -12,16 +12,16 @@
         `-- Quit
 */
 
+using System.Text.Json;
 using Models;
-using Services;
-using DataAccess;
 
-if (!DatabaseStorage.IsTheDatabaseLive())
-{
-    UIHandler.DoInputError("It would appear the database is down");
-    UIHandler.DoExit(1);
-}
+// if (!DatabaseStorage.IsTheDatabaseLive())
+// {
+//     UIHandler.DoInputError("It would appear the database is down");
+//     UIHandler.DoExit(1);
+// }
 
+UIHandler.client.BaseAddress = new Uri("http://localhost:5093/");
 while (true)
 {
     Console.Clear();
@@ -34,12 +34,12 @@ while (true)
     int selection = UIHandler.GetSelection();
     if (selection == 1)
     {
-        UIHandler.LoginInteraction();
+        await UIHandler.LoginInteraction();
     }
     else if (selection == 2)
     {
         // Employee
-        UIHandler.RegisterInteraction();
+        await UIHandler.RegisterInteraction();
     }
     else if (selection == 3)
     {
@@ -54,9 +54,8 @@ while (true)
 
 public class UIHandler
 {
-    private static LoginHandler users = new LoginHandler(new DatabaseStorage());
-    private static TicketHandler tickets = new TicketHandler(new DatabaseStorage());
-    private static User loggedInUser = new User("incorrect", "not possiable to use", false);
+    public static readonly HttpClient client = new HttpClient();
+    private static Guid id = Guid.Empty;
 
     public static void DoExit(int code)
     {
@@ -100,10 +99,10 @@ public class UIHandler
         return -1;
     }
 
-    public static void ManagerInteraction()
+    public async static Task ManagerInteraction()
     {
         Console.Clear();
-        Console.WriteLine($"Welcome Manager, {loggedInUser}!");
+        Console.WriteLine($"Welcome Manager!");
         Console.WriteLine("----------------------------------------");
         Console.WriteLine(" [1] View Past Tickets");
         Console.WriteLine(" [2] Process Pending Tickets"); ;
@@ -115,39 +114,75 @@ public class UIHandler
             Console.WriteLine("------------------------------------------------------------------------------------------------");
             Console.WriteLine($"|{" Status ",-20}|{" Creator ",-20}|{" Amount ",-20}|{" Description "}");
             Console.WriteLine("------------------------------------------------------------------------------------------------");
-            foreach (Ticket t in tickets.GetTickets())
+
+            HttpResponseMessage msg = await client.GetAsync($"ERS/ticket/veiw/{id}");
+            List<Ticket>? tickets = JsonSerializer.Deserialize<List<Ticket>>(await msg.Content.ReadAsStringAsync());
+
+            if (tickets == null)
             {
-                Console.WriteLine(t.ToString());
-                Console.WriteLine("------------------------------------------------------------------------------------------------");
+                UIHandler.DoInputError("Message recieve failure...");
             }
-            DoInputError("");
-            ManagerInteraction();
+            else
+            {
+                foreach (Ticket t in tickets)
+                {
+                    Console.WriteLine(t.ToString());
+                    Console.WriteLine("------------------------------------------------------------------------------------------------");
+                }
+                DoInputError("");
+            }
+
+            await ManagerInteraction();
         }
         else if (selection == 2)
         {
-            foreach (Ticket t in tickets.GetPending())
+            HttpResponseMessage msg = await client.GetAsync($"ERS/ticket/veiw/{id}/pending");
+            List<Ticket>? tickets = JsonSerializer.Deserialize<List<Ticket>>(await msg.Content.ReadAsStringAsync());
+
+            if (tickets == null)
             {
-                Console.WriteLine("Ticket: " + t.ToString());
-                Console.WriteLine("[1] Approve [2] Deny [3] Skip");
-                selection = GetSelection();
-                if (selection == 1)
+                DoInputError("Unable to deserialize object");
+            }
+            else
+            {
+                foreach (Ticket t in tickets)
                 {
-                    tickets.UpdateTicket(t.Id, "approved");
-                }
-                else if (selection == 2)
-                {
-                    tickets.UpdateTicket(t.Id, "denied");
-                }
-                else if (selection == 3)
-                {
-                    continue;
-                }
-                else
-                {
-                    Console.WriteLine("Invalid Option skipping...");
+                    Console.WriteLine("Ticket: " + t.ToString());
+                    Console.WriteLine("[1] Approve [2] Deny [3] Skip");
+                    selection = GetSelection();
+                    if (selection == 1)
+                    {
+                        HttpResponseMessage m = await client.PutAsync($"ERS/ticket/approve/{t.Id}", new FormUrlEncodedContent(new[] {
+                            new KeyValuePair<string,string> ("id",id.ToString())
+                        }));
+
+                        if (m.StatusCode != System.Net.HttpStatusCode.OK)
+                        {
+                            DoInputError("Was unable to update the ticket");
+                        }
+                    }
+                    else if (selection == 2)
+                    {
+                        HttpResponseMessage m = await client.PutAsync($"ERS/ticket/denied/{t.Id}", new FormUrlEncodedContent(new[] {
+                            new KeyValuePair<string,string> ("id",id.ToString())
+                        }));
+
+                        if (m.StatusCode != System.Net.HttpStatusCode.OK)
+                        {
+                            DoInputError("Was unable to update the ticket");
+                        }
+                    }
+                    else if (selection == 3)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid Option skipping...");
+                    }
                 }
             }
-            ManagerInteraction();
+            await ManagerInteraction();
         }
         else if (selection == 3)
         {
@@ -156,15 +191,15 @@ public class UIHandler
         else
         {
             DoInputError("Invalid Selection");
-            ManagerInteraction();
+            await ManagerInteraction();
         }
 
     }
 
-    public static void EmployeeInteraction()
+    public async static Task EmployeeInteraction()
     {
         Console.Clear();
-        Console.WriteLine($"Welecome Employee, {loggedInUser}!");
+        Console.WriteLine($"Welecome Employee!");
         Console.WriteLine("----------------------------------------");
         Console.WriteLine(" [1] View Past Tickets");
         Console.WriteLine(" [2] Create Reimbursement Ticket");
@@ -177,13 +212,23 @@ public class UIHandler
             Console.WriteLine("------------------------------------------------------------------------------------------------");
             Console.WriteLine($"|{" Status ",-20}|{" Creator ",-20}|{" Amount ",-20}|{" Description "}");
             Console.WriteLine("------------------------------------------------------------------------------------------------");
-            foreach (Ticket t in tickets.GetTickets(loggedInUser))
+            HttpResponseMessage msg = await client.GetAsync($"ERS/ticket/veiw/{id}");
+            List<Ticket>? tickets = JsonSerializer.Deserialize<List<Ticket>>(await msg.Content.ReadAsStringAsync());
+
+            if (tickets == null)
             {
-                Console.WriteLine(t.ToString());
-                Console.WriteLine("------------------------------------------------------------------------------------------------");
+                UIHandler.DoInputError("Message recieve failure...");
             }
-            DoInputError("");
-            EmployeeInteraction();
+            else
+            {
+                foreach (Ticket t in tickets)
+                {
+                    Console.WriteLine(t.ToString());
+                    Console.WriteLine("------------------------------------------------------------------------------------------------");
+                }
+                DoInputError("");
+            }
+            await EmployeeInteraction();
         }
         else if (selection == 2)
         {
@@ -192,21 +237,30 @@ public class UIHandler
             if (amt < 0)
             {
                 DoInputError("Invalid Amount given");
-                EmployeeInteraction();
+                await EmployeeInteraction();
                 return;
             }
             Console.Write("Description of Ticket: ");
             string? desc = Console.ReadLine();
             if (desc != null)
             {
-                tickets.AddTicket(new Ticket(loggedInUser.Username, amt, desc));
+                HttpResponseMessage m = await client.PutAsync($"ERS/ticket/submit", new FormUrlEncodedContent(new[] {
+                            new KeyValuePair<string,string> ("id",id.ToString()),
+                            new KeyValuePair<string, string> ("amount",Convert.ToString(amt)),
+                            new KeyValuePair<string, string>("description",desc)
+                }));
+
+                if (m.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    DoInputError("Was unable to update the ticket");
+                }
                 Console.WriteLine("Ticket submitted");
             }
             else
             {
                 Console.WriteLine("Cannot add null description ticket");
             }
-            EmployeeInteraction();
+            await EmployeeInteraction();
         }
         else if (selection == 3)
         {
@@ -215,13 +269,13 @@ public class UIHandler
         else
         {
             DoInputError("Invalid Selection");
-            EmployeeInteraction();
+            await EmployeeInteraction();
         }
 
 
     }
 
-    public static void LoginInteraction()
+    public async static Task LoginInteraction()
     {
         Console.Clear();
         Console.Write("Username: ");
@@ -233,47 +287,32 @@ public class UIHandler
             return;
         }
 
-        User? temp = users.login(username, password);
+        HttpResponseMessage msg = await client.PostAsync("ERS/login", new FormUrlEncodedContent(new[] {
+            new KeyValuePair<string,string>("username",username),
+            new KeyValuePair<string, string>("password",password)
+        }));
+        User? temp = JsonSerializer.Deserialize<User>(await msg.Content.ReadAsStringAsync());
+
         if (temp == null)
         {
             DoInputError("Invalid Username or Password");
             return;
         }
 
-        loggedInUser = temp;
+        id = temp.Id;
         if (temp.IsManager)
         {
-            ManagerInteraction();
+            await ManagerInteraction();
         }
         else
         {
-            EmployeeInteraction();
+            await EmployeeInteraction();
         }
     }
 
-    public static void RegisterInteraction()
+    public async static Task RegisterInteraction()
     {
         Console.Clear();
-        Console.Write("Will this user be a manager [y/n]? ");
-        string? man = Console.ReadLine();
-        if (man == null)
-        {
-            return;
-        }
-        bool m;
-        if (man.ToLower().Equals("y"))
-        {
-            m = true;
-        }
-        else if (man.ToLower().Equals("n"))
-        {
-            m = false;
-        }
-        else
-        {
-            DoInputError("Invalid Selection");
-            return;
-        }
 
         Console.Write("New Username: ");
         string? username = Console.ReadLine();
@@ -283,9 +322,13 @@ public class UIHandler
         {
             return;
         }
-        User temp = new User(username, "", m);
-        temp.Password = User.Hash(password, temp.Salt);
-        if (users.AddUser(temp))
+
+        HttpResponseMessage msg = await client.PostAsync("ERS/register", new FormUrlEncodedContent(new[] {
+            new KeyValuePair<string,string>("username",username),
+            new KeyValuePair<string,string> ("password",password)
+        }));
+
+        if (msg.StatusCode == System.Net.HttpStatusCode.OK)
         {
             return;
         }

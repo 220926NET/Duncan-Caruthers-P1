@@ -48,7 +48,7 @@ public class ERSController : ControllerBase
             Models.User? temp = _users.login(form["username"], form["password"]);
             if (temp != null)
             {
-                return Ok(new { Id = temp.Id });
+                return Ok(new { Id = temp.Id, IsManager = temp.IsManager });
             }
             return Unauthorized("Username or password is invalid");
         }

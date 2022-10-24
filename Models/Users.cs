@@ -11,6 +11,8 @@ public class User
 
     public byte[] Salt { get; set; } = RandomNumberGenerator.GetBytes(512);
 
+    public User() { }
+
     public User(string username, string password, bool mgr)
     {
         Id = Guid.NewGuid();
