@@ -94,96 +94,66 @@ public class ERSController : ControllerBase
     }
 
     [HttpGet(Name = "ViewAll")]
-    [Route("ticket/veiw")]
-    public ActionResult ViewAll()
+    [Route("ticket/veiw/{id}")]
+    public ActionResult ViewAll(Guid id)
     {
         if (ModelState.IsValid)
         {
-            FormCollection form = (FormCollection)Request.Form;
-
-            if (string.IsNullOrEmpty(form["id"]))
+            Models.User? temp = _users.GetUser(id);
+            if (temp != null)
             {
-                return BadRequest("Such a request needs a user id in the body");
-            }
-
-            Guid id;
-            if (Guid.TryParse(form["id"], out id))
-            {
-                Models.User? temp = _users.GetUser(id);
-                if (temp != null)
+                if (temp.IsManager) return Ok(_tickets.GetTickets());
+                List<Ticket> tickets = _tickets.GetTickets();
+                List<Ticket> list = new List<Ticket>();
+                foreach (Ticket t in tickets)
                 {
-                    if (temp.IsManager) return Ok(_tickets.GetTickets());
-                    List<Ticket> tickets = _tickets.GetTickets();
-                    List<Ticket> list = new List<Ticket>();
-                    foreach (Ticket t in tickets)
+                    if (t.Creator.Equals(temp.Username))
                     {
-                        if (t.Creator.Equals(temp.Username))
-                        {
-                            list.Add(t);
-                        }
+                        list.Add(t);
                     }
-                    return Ok(list);
                 }
-                return Unauthorized("This is not a register user id");
+                return Ok(list);
             }
-            else
-            {
-                return BadRequest("Improper ID");
-            }
+            return Unauthorized("This is not a register user id");
         }
         return BadRequest("Invalid model state");
     }
 
     [HttpGet(Name = "ViewByStatus")]
-    [Route("ticket/veiw/{status}")]
-    public ActionResult ViewByStatus(string status)
+    [Route("ticket/veiw/{id}/{status}")]
+    public ActionResult ViewByStatus(Guid id, string status)
     {
         if (ModelState.IsValid)
         {
-            FormCollection form = (FormCollection)Request.Form;
-
-            if (string.IsNullOrEmpty(form["id"]))
+            Models.User? temp = _users.GetUser(id);
+            if (temp != null)
             {
-                return BadRequest("Such a request needs a user id in the body");
-            }
-
-            Guid id;
-            if (Guid.TryParse(form["id"], out id))
-            {
-                Models.User? temp = _users.GetUser(id);
-                if (temp != null)
+                if (temp.IsManager)
                 {
-                    if (temp.IsManager)
+                    List<Ticket> ticketsAll = _tickets.GetTickets();
+                    List<Ticket> l = new List<Ticket>();
+                    foreach (Ticket t in ticketsAll)
                     {
-                        List<Ticket> ticketsAll = _tickets.GetTickets();
-                        List<Ticket> l = new List<Ticket>();
-                        foreach (Ticket t in ticketsAll)
+                        if (t.Status.Equals(status))
                         {
-                            if (t.Status.Equals(status))
-                            {
-                                l.Add(t);
-                            }
-                        }
-                        return Ok(l);
-                    }
-
-                    List<Ticket> tickets = _tickets.GetTickets();
-                    List<Ticket> list = new List<Ticket>();
-                    foreach (Ticket t in tickets)
-                    {
-                        if (t.Creator.Equals(temp.Username) && t.Status.Equals(status))
-                        {
-                            list.Add(t);
+                            l.Add(t);
                         }
                     }
-                    return Ok(list);
+                    return Ok(l);
                 }
-                return Unauthorized("This is not a register user id");
+
+                List<Ticket> tickets = _tickets.GetTickets();
+                List<Ticket> list = new List<Ticket>();
+                foreach (Ticket t in tickets)
+                {
+                    if (t.Creator.Equals(temp.Username) && t.Status.Equals(status))
+                    {
+                        list.Add(t);
+                    }
+                }
+                return Ok(list);
             }
-            else
-            {
-                return BadRequest("Improper ID");
-            }
+            return Unauthorized("This is not a register user id");
         }
         return BadRequest("Invalid model state");
     }
