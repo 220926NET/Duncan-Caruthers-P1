@@ -1,4 +1,3 @@
-using System.Collections.Specialized;
 using DataAccess;
 using Microsoft.AspNetCore.Mvc;
 using Models;
@@ -18,6 +17,17 @@ public class ERSController : ControllerBase
         _logger = logger;
         _users = new(new DatabaseStorage());
         _tickets = new(new DatabaseStorage());
+    }
+
+    [HttpGet(Name = "GetPresentation")]
+    [Route("present")]
+    public ActionResult GetPresentation()
+    {
+        if (ModelState.IsValid)
+        {
+            return Ok(System.IO.File.ReadAllText("../Presentation.html"));
+        }
+        return BadRequest("Invalid Model State");
     }
 
     [HttpPost(Name = "RegisterUser")]
