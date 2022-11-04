@@ -10,13 +10,20 @@ namespace API.Controllers;
 public class ERSController : ControllerBase
 {
     private readonly ILogger<ERSController> _logger;
-    private readonly LoginHandler _users;
-    private readonly TicketHandler _tickets;
+    private readonly LoginHandler? _users;
+    private readonly TicketHandler? _tickets;
     public ERSController(ILogger<ERSController> logger)
     {
         _logger = logger;
-        _users = new(new DatabaseStorage());
-        _tickets = new(new DatabaseStorage());
+        _users = null;
+        _tickets = null;
+    }
+
+    [HttpGet(Name = "test")]
+    [Route("howdy")]
+    public ActionResult SayHello()
+    {
+        return Ok("Howdy!");
     }
 
     [HttpGet(Name = "GetPresentation")]
