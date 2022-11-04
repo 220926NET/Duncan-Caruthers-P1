@@ -12,6 +12,10 @@ public class TicketHandler
         this.storage = storage;
     }
 
+    public TicketHandler()
+    {
+    }
+
     public void AddTicket(Ticket ticket)
     {
         storage.AddTicket(ticket);

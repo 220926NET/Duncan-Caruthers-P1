@@ -7,16 +7,14 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class ERSController : ControllerBase
+public class ErsController : ControllerBase
 {
-    private readonly ILogger<ERSController> _logger;
     private readonly LoginHandler? _users;
     private readonly TicketHandler? _tickets;
-    public ERSController(ILogger<ERSController> logger)
+    public ErsController()
     {
-        _logger = logger;
-        _users = null;
-        _tickets = null;
+        _users = new();
+        _tickets = new();
     }
 
     [HttpGet(Name = "test")]
